@@ -56,9 +56,9 @@ app.post(
     function (req, res) {}
 );
 
-app.get("/register", (req, res) => {
-    res.render("register");
-});
+// app.get("/register", (req, res) => {
+//     res.render("register");
+// });
 app.post("/register", (req, res) => {
     var newUser = new User({
         username: req.body.username,
@@ -95,5 +95,8 @@ io.on("connection", (socket) => {
     });
     socket.on("typing", (data) => {
         socket.broadcast.emit("typing", data);
+    });
+    socket.on("newconnection", (data) => {
+        socket.broadcast.emit("newconnection", data);
     });
 });

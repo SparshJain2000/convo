@@ -1,19 +1,21 @@
 <%-include('partials/header.ejs') %>
+    <div id="alert"></div>
     <div id="main">
         <div id="chat-window" class="rounded overflow-auto shadow">
             <div id="output" class="p-3 container">
             </div>
             <div id="feedback" class='p-3'></div>
         </div>
-        <div>
-            <input class='form-control' type="text" placeholder="handle" id="handle">
-            <input class='form-control' type="text" placeholder="message" id="message">
-            <input class="btn btn-primary form-control" type="button" id="button" value='Send'>
+        <div class='form-inline'>
+            <input class='form-control col-10 ' type="text" placeholder="Type your message ..." id="message">
+            <button class="btn btn-primary form-control col-2" type="button" id="button"><i
+                class="fa fa-paper-plane"></i></button>
+
         </div>
     </div>
+    <%-include('partials/footer.ejs')%>
+        <script src='chat.js'>
+        </script>
+        </body>
 
-    <script src='chat.js'>
-    </script>
-    </body>
-
-    </html>
+        </html>

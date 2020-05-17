@@ -1,10 +1,10 @@
 const socket = io.connect("http://localhost:3000");
 const message = document.getElementById("message"),
-    handle = document.getElementById("handle"),
     output = document.getElementById("output"),
     button = document.getElementById("button"),
     feedback = document.getElementById("feedback"),
     name = document.getElementById("dropdownMenuButton"),
+    alert = document.getElementById("alert"),
     chat_window = document.getElementById("chat-window");
 
 button.addEventListener("click", () => {
@@ -13,38 +13,61 @@ button.addEventListener("click", () => {
         message: message.value,
         date: new Date(),
     };
+    message.value = "";
     socket.emit("chat", data);
     output.innerHTML +=
-        "<div style='display:flex;justify-content:flex-end'><div class='bg-secondary mess p-2 m-2 rounded col-12 col-md-6'><h6 class='text-warning '>" +
+        "<div style='display:flex;justify-content:flex-end'><div class='bg-secondary mess p-2 mr-1 m-2 rounded col-8 '><h6 class='text-warning '>" +
         data.handle +
         " </h6><h5> " +
         data.message +
-        "</h5><p>" +
+        "</h5><div style='text-align:right'>" +
         new Intl.DateTimeFormat("en-US", {
             hour: "numeric",
             minute: "numeric",
         }).format(new Date(data.date)) +
-        "</p></div></div>";
+        "</div></div></div>";
+    scroll();
 });
 message.addEventListener("keypress", () => {
-    socket.emit("typing", handle.value);
+    socket.emit("typing", name.textContent.trim());
+});
+socket.on("connect", () => {
+    socket.emit("newconnection", name.textContent.trim());
+});
+socket.on("newconnection", (data) => {
+    alert.innerHTML =
+        "<div class='alert alert-success' role='alert'>" +
+        data +
+        " joined the chat" +
+        "</div>";
+    window.setTimeout(function () {
+        $(".alert")
+            .fadeTo(500, 0)
+            .slideUp(500, function () {
+                $(this).remove();
+            });
+    }, 2000);
 });
 socket.on("chat", (data) => {
     feedback.innerHTML = "";
     output.innerHTML +=
-        "<div class='row'><div class='bg-dark mess p-2 m-2 rounded col-12 col-md-6'><h6 class='text-success '>" +
+        "<div style='display:flex;justify-content:flex-start'><div class='bg-dark mess p-2 ml-1 m-2 rounded col-8 '><h6 class='text-success '>" +
         data.handle +
         " </h6><h5> " +
         data.message +
-        "</h5><p>" +
+        "</h5><div style='text-align:right'>" +
         new Intl.DateTimeFormat("en-US", {
             hour: "numeric",
             minute: "numeric",
         }).format(new Date(data.date)) +
-        "</p></div></div>";
+        "</div></div></div>";
 
-    chat_window.scrollTop = chat_window.scrollHeight;
+    scroll();
 });
 socket.on("typing", (data) => {
     feedback.innerHTML = "<p><em>" + data + " is typing .... </em></p>";
+    scroll();
 });
+const scroll = () => {
+    chat_window.scrollTop = chat_window.scrollHeight;
+};
