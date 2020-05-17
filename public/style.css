@@ -17,7 +17,7 @@ body {
     margin-top: 2vh;
     background-color: #434343;
     min-height: 50vh;
-    max-height: 75vh;
+    max-height: 70vh;
     color: black;
     color: white;
 }
@@ -39,10 +39,11 @@ body {
 }
 
 footer {
-    position: fixed;
+    /* position: fixed;
     bottom: 0;
-    width: 100%;
-    z-index: 2
+    width: 100%; */
+    margin-top: 14vh;
+    z-index: -2;
 }
 
 footer .fa {
