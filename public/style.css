@@ -1,0 +1,29 @@
+body {
+    background-color: #232323;
+}
+
+#main {
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+#chat-window {
+    margin-top: 5vh;
+    background-color: #434343;
+    height: 65vh;
+    color: black;
+    color: white;
+    font-size: .5rem;
+}
+
+#form {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    margin-top: 15vh;
+    margin-right: 20vw;
+    margin-left: 20vw;
+}
+
+.mess {
+    font-size: xx-small;
+}
