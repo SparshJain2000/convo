@@ -1,4 +1,4 @@
-const socket = io.connect("http://localhost:3000");
+const socket = io.connect(window.location.hostname);
 const message = document.getElementById("message"),
     output = document.getElementById("output"),
     button = document.getElementById("button"),
