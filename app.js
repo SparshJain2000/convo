@@ -94,8 +94,8 @@ server.listen(port, () => console.log(`Listening on ${port}`));
 
 // const io = socket(server);
 // io.configure();
-io.set("transports", ["xhr-polling"]);
-io.set("polling duration", 10);
+// io.set("transports", ["xhr-polling"]);
+// io.set("polling duration", 10);
 
 io.on("connection", (socket) => {
     console.log("connection made ");
