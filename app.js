@@ -81,10 +81,9 @@ app.get("/logout", function (req, res) {
     res.redirect("back");
 });
 const port = process.env.PORT || 3000;
-const server = app.listen(port, () => {
-    console.log("listening at 3000");
-});
-
+const server = express()
+    .use((req, res) => res.render("index"))
+    .listen(port, () => console.log(`Listening on ${port}`));
 //Socket
 const io = socket(server);
 io.on("connection", (socket) => {
