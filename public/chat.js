@@ -9,14 +9,14 @@ const message = document.getElementById("message"),
 
 button.addEventListener("click", () => {
     let data = {
-        handle: name.textContent.trim(),
+        handle: name.textContent,
         message: message.value,
         date: new Date(),
     };
     message.value = "";
     socket.emit("chat", data);
     output.innerHTML +=
-        "<div style='display:flex;justify-content:flex-end'><div class='bg-secondary mess p-2 mr-1 m-2 rounded col-8 '><h6 class='text-warning '>" +
+        "<div style='display:flex;justify-content:flex-end'><div class='bg-secondary mess p-2 mr-1 m-2 rounded col-8 '><h6 class='text-warning text-capitalize'>" +
         data.handle +
         " </h6><h5> " +
         data.message +
@@ -27,12 +27,13 @@ button.addEventListener("click", () => {
         }).format(new Date(data.date)) +
         "</div></div></div>";
     scroll();
+    message.focus();
 });
 message.addEventListener("keypress", () => {
-    socket.emit("typing", name.textContent.trim());
+    socket.emit("typing", name.textContent);
 });
 socket.on("connect", () => {
-    socket.emit("newconnection", name.textContent.trim());
+    socket.emit("newconnection", name.textContent);
 });
 socket.on("newconnection", (data) => {
     alert.innerHTML =
@@ -51,7 +52,7 @@ socket.on("newconnection", (data) => {
 socket.on("chat", (data) => {
     feedback.innerHTML = "";
     output.innerHTML +=
-        "<div style='display:flex;justify-content:flex-start'><div class='bg-dark mess p-2 ml-1 m-2 rounded col-8 '><h6 class='text-success '>" +
+        "<div style='display:flex;justify-content:flex-start'><div class='bg-dark mess p-2 ml-1 m-2 rounded col-8 '><h6 class='text-success text-capitalize'>" +
         data.handle +
         " </h6><h5> " +
         data.message +
@@ -63,9 +64,13 @@ socket.on("chat", (data) => {
         "</div></div></div>";
 
     scroll();
+    message.focus();
 });
 socket.on("typing", (data) => {
-    feedback.innerHTML = "<p><em>" + data + " is typing .... </em></p>";
+    feedback.innerHTML =
+        "<p class='badge badge-success'><em>" +
+        data +
+        " is typing .... </em></p>";
     scroll();
 });
 const scroll = () => {

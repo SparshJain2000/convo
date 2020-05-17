@@ -13,11 +13,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Noto+Sans+HK&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <nav class="navbar navbar-dark bg-dark">
-        <a class="navbar-brand" href='/'>CONVO</a>
+        <a class="navbar-brand" href='/'><i class="fa fa-comments"></i>&nbspCONVO</a>
         <% if(!currentUser){ %>
             <a class="btn btn-primary btn align-right text-white" href='/login'>login <i class='fa fa-user'></i></a>
             <% } else { %>
@@ -25,7 +26,7 @@
 
                 <div class="dropdown align-right">
                     <button class="btn btn-primary btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <%=currentUser.first_name%>
+                <%=currentUser.first_name.trim()%>
             </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                         <a class="btn btn-dark btn-xs dropdown-item" href="/logout">Log Out <i class='fa fa-sign-out '></i></a>

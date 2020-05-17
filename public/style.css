@@ -1,6 +1,11 @@
 body {
     background-color: #232323;
     overflow-y: auto;
+    font-family: 'Noto Sans HK', sans-serif;
+}
+
+.navbar .navbar-brand {
+    font-family: 'Pacifico', cursive
 }
 
 #main {
@@ -11,7 +16,8 @@ body {
 #chat-window {
     margin-top: 2vh;
     background-color: #434343;
-    height: 60vh;
+    min-height: 50vh;
+    max-height: 75vh;
     color: black;
     color: white;
 }
@@ -20,24 +26,28 @@ body {
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
     margin-top: 15vh;
-    margin-right: 18vw;
-    margin-left: 18vw;
+    margin-right: 17vw;
+    margin-left: 17vw;
 }
 
 .mess {
     word-wrap: break-word;
     font-size: x-small;
+    max-width: max-content;
+    min-width: 20vw
+    /* max-width: fit-content; */
 }
 
 footer {
     position: fixed;
     bottom: 0;
     width: 100%;
+    z-index: 2
 }
 
 footer .fa {
-    padding: 1.2vw;
-    font-size: 1.3rem;
+    padding: 1vw;
+    font-size: 1.2rem;
     margin-left: .8vw;
     margin-right: .8vw;
     text-align: center;
@@ -61,7 +71,6 @@ footer .fa {
 
 .fa-instagram:hover {
     color: white;
-    background: #d6249f;
     background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
     transition: .4s ease-in-out;
 }
