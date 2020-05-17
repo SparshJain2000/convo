@@ -9,6 +9,8 @@ const express = require("express"),
     passport = require("passport"),
     middleware = require("./middleware"),
     User = require("./models/user");
+var server = require("http").createServer(app);
+var io = socket(server);
 env.config();
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
@@ -25,7 +27,12 @@ app.use(
         saveUninitialized: false,
     })
 );
+//====================================================================
 
+// app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+
+// app.use(express.errorHandler());
+//====================================================================
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStratergy(User.authenticate()));
@@ -82,12 +89,15 @@ app.get("/logout", function (req, res) {
 });
 const port = process.env.PORT || 3000;
 
-const server = app.listen(port, () => console.log(`Listening on ${port}`));
+server.listen(port, () => console.log(`Listening on ${port}`));
 //Socket
 
-const io = socket(server);
+// const io = socket(server);
+// io.configure();
+// io.set("transports", ["xhr-polling"]);
+// io.set("polling duration", 10);
+
 io.on("connection", (socket) => {
-    c++;
     console.log("connection made ");
     socket.on("chat", (data) => {
         socket.broadcast.emit("chat", data);
