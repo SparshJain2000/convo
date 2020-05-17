@@ -82,13 +82,14 @@ app.get("/logout", function (req, res) {
 });
 const port = process.env.PORT || 3000;
 const server = express()
-    .use((req, res) => res.render("index"))
+    .use((req, res) => res.sendFile("/views/index.ejs", { root: __dirname }))
     .listen(port, () => console.log(`Listening on ${port}`));
 //Socket
+
 const io = socket(server);
 io.on("connection", (socket) => {
     c++;
-    console.log("connection made ", c);
+    console.log("connection made ");
     socket.on("chat", (data) => {
         socket.broadcast.emit("chat", data);
     });
