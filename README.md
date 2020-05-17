@@ -38,5 +38,5 @@ SECRET = 'secret for Passport'
 #### Start the server (run app.js file)
 
 ```bash
-node app.js
+nodemon app
 ```
