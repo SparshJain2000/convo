@@ -80,8 +80,8 @@ app.get("/logout", function (req, res) {
     req.logout();
     res.redirect("back");
 });
-
-const server = app.listen(3000, () => {
+const port = process.env.PORT || 3000;
+const server = app.listen(port, () => {
     console.log("listening at 3000");
 });
 
