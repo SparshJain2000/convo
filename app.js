@@ -41,7 +41,7 @@ app.use(function (req, res, next) {
 let c = 0;
 
 app.get("/", middleware.isLoggedIn, (req, res) => {
-    res.render("index", { c: c });
+    res.render("index");
 });
 
 app.get("/login", (req, res) => {
@@ -81,9 +81,8 @@ app.get("/logout", function (req, res) {
     res.redirect("back");
 });
 const port = process.env.PORT || 3000;
-const server = express()
-    .use((req, res) => res.sendFile("/views/index.ejs", { root: __dirname }))
-    .listen(port, () => console.log(`Listening on ${port}`));
+
+const server = app.listen(port, () => console.log(`Listening on ${port}`));
 //Socket
 
 const io = socket(server);
