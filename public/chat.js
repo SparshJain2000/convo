@@ -7,14 +7,38 @@ const message = document.getElementById("message"),
     name = document.getElementById("dropdownMenuButton"),
     alert = document.getElementById("alert"),
     chat_window = document.getElementById("chat-window");
+let image = "";
+const fileInput = document.getElementById("file-input");
 
+fileInput.addEventListener("change", (e) =>
+    doSomethingWithFiles(e.target.files)
+);
+
+function doSomethingWithFiles(fileList) {
+    let file = null;
+
+    for (let i = 0; i < fileList.length; i++) {
+        if (fileList[i].type.match(/^image\//)) {
+            file = fileList[i];
+            break;
+        }
+    }
+
+    if (file !== null) {
+        console.log(URL.createObjectURL(file));
+        image = URL.createObjectURL(file);
+        console.log(image);
+    }
+}
 button.addEventListener("click", () => {
     let data = {
         handle: name.textContent,
         message: message.value,
         date: new Date(),
+        image: image,
     };
     message.value = "";
+
     socket.emit("chat", data);
 });
 message.addEventListener("keyup", () => {
@@ -68,6 +92,7 @@ socket.on("newconnection", (data) => {
     }, 3000);
 });
 socket.on("chat", (data) => {
+    console.log(data);
     if (data.handle === name.textContent) {
         let users = "";
         data.users.forEach((item) => {
@@ -85,7 +110,11 @@ socket.on("chat", (data) => {
                 hour: "numeric",
                 minute: "numeric",
             }).format(new Date(data.date)) +
-            "</div></div></div>";
+            "</div></div>" +
+            '<img src="' +
+            data.image +
+            '"/>' +
+            "</div>";
 
         output.innerHTML +=
             "<div style='display:flex;justify-content:flex-end'><div class='bg-success seen pl-2 pr-2 p-1 mr-2 rounded col-8 '><strong><em>Seen by " +
@@ -103,17 +132,26 @@ socket.on("chat", (data) => {
                 hour: "numeric",
                 minute: "numeric",
             }).format(new Date(data.date)) +
-            "</div></div></div>";
+            "</div></div>" +
+            '<img src="' +
+            data.image +
+            '"/>' +
+            "</div>";
     }
     scroll();
     // message.focus();
 });
 socket.on("typing", (data) => {
     console.log(data === "stop");
-    if (data === "stop") $("#feedback").html("");
-    else
+    if (data === "stop") {
+        $(".type")
+            .fadeTo(500, 0)
+            .slideUp(500, function () {
+                $(this).remove();
+            });
+    } else
         $("#feedback").html(
-            "<p class='badge badge-info p-2 ml-2'><em>" +
+            "<p class='badge badge-info p-2 ml-2 type'><em>" +
                 data +
                 " is typing .... </em></p>"
         );

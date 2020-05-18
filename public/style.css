@@ -98,3 +98,8 @@ footer .fa {
     background: rgba(255, 255, 255, .1);
     height: max-content;
 }
+
+img {
+    width: 200px;
+    height: 200px
+}

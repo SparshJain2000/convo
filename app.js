@@ -2,6 +2,7 @@ const express = require("express"),
     app = express(),
     socket = require("socket.io"),
     path = require("path"),
+    fs = require("fs"),
     mongoose = require("mongoose"),
     env = require("dotenv"),
     bodyParser = require("body-parser"),
@@ -96,6 +97,9 @@ users = [];
 io.on("connection", (socket) => {
     console.log("connection made ");
     socket.on("chat", (data) => {
+        // fs.readFile(__dirname + "public/images/image.png", function (err, buf) {
+        //     data.image = { image: true, buffer: buf };
+        // });
         data.users = users;
         io.sockets.emit("chat", data);
     });
