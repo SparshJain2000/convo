@@ -1,5 +1,5 @@
-const socket = io.connect(window.location.hostname);
-// const socket = io.connect("http://localhost:5000");
+// const socket = io.connect(window.location.hostname);
+const socket = io.connect("http://localhost:5000");
 const message = document.getElementById("message"),
     output = document.getElementById("output"),
     button = document.getElementById("button"),
