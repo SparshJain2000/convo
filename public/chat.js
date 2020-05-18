@@ -10,26 +10,24 @@ const message = document.getElementById("message"),
 let image = "";
 const fileInput = document.getElementById("file-input");
 
-fileInput.addEventListener("change", (e) =>
-    doSomethingWithFiles(e.target.files)
-);
-
-function doSomethingWithFiles(fileList) {
-    let file = null;
-
-    for (let i = 0; i < fileList.length; i++) {
-        if (fileList[i].type.match(/^image\//)) {
-            file = fileList[i];
-            break;
-        }
-    }
-
-    if (file !== null) {
-        console.log(URL.createObjectURL(file));
-        image = URL.createObjectURL(file);
-        console.log(image);
-    }
-}
+$("#file-input").on("change", function (e) {
+    //Get the first (and only one) file element
+    //that is included in the original event
+    var file = e.originalEvent.target.files[0],
+        reader = new FileReader();
+    //When the file has been read...
+    reader.onload = function (evt) {
+        //Because of how the file was read,
+        //evt.target.result contains the image in base64 format
+        //Nothing special, just creates an img element
+        //and appends it to the DOM so my UI shows
+        //that I posted an image.
+        //send the image via Socket.io
+        image = evt.target.result;
+    };
+    //And now, read the image and base64
+    reader.readAsDataURL(file);
+});
 button.addEventListener("click", () => {
     let data = {
         handle: name.textContent,
@@ -92,7 +90,7 @@ socket.on("newconnection", (data) => {
     }, 3000);
 });
 socket.on("chat", (data) => {
-    console.log(data);
+    // console.log(data);
     if (data.handle === name.textContent) {
         let users = "";
         data.users.forEach((item) => {
@@ -105,16 +103,16 @@ socket.on("chat", (data) => {
             data.handle +
             " </h6><h5> " +
             data.message +
-            "</h5><div style='text-align:right'>" +
+            "</h5>" +
+            '<img class="img-fluid rounded" src="' +
+            data.image +
+            '"/>' +
+            "<div style='text-align:right'>" +
             new Intl.DateTimeFormat("en-US", {
                 hour: "numeric",
                 minute: "numeric",
             }).format(new Date(data.date)) +
-            "</div></div>" +
-            '<img src="' +
-            data.image +
-            '"/>' +
-            "</div>";
+            "</div></div></div>";
 
         output.innerHTML +=
             "<div style='display:flex;justify-content:flex-end'><div class='bg-success seen pl-2 pr-2 p-1 mr-2 rounded col-8 '><strong><em>Seen by " +
@@ -127,18 +125,20 @@ socket.on("chat", (data) => {
             data.handle +
             " </h6><h5> " +
             data.message +
+            "</h5>" +
+            '<img class="img-fluid rounded" src="' +
+            data.image +
+            '"/>' +
             "</h5><div style='text-align:right'>" +
             new Intl.DateTimeFormat("en-US", {
                 hour: "numeric",
                 minute: "numeric",
             }).format(new Date(data.date)) +
-            "</div></div>" +
-            '<img src="' +
-            data.image +
-            '"/>' +
-            "</div>";
+            "</div></div></div>";
     }
     scroll();
+    $("file-input").val("");
+    image = "";
     // message.focus();
 });
 socket.on("typing", (data) => {
