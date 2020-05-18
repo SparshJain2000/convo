@@ -100,11 +100,11 @@ footer .fa {
 }
 
 .input-label {
-    font-size: 1.25em;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 600;
     color: white;
     /* background-color: black; */
-    display: inline-block;
+    display: block;
 }
 
 #file-input {
