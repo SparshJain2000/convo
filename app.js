@@ -8,9 +8,9 @@ const express = require("express"),
     LocalStratergy = require("passport-local"),
     passport = require("passport"),
     middleware = require("./middleware"),
-    User = require("./models/user");
-var server = require("http").createServer(app);
-var io = socket(server);
+    User = require("./models/user"),
+    server = require("http").createServer(app),
+    io = socket(server);
 env.config();
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
@@ -27,12 +27,7 @@ app.use(
         saveUninitialized: false,
     })
 );
-//====================================================================
 
-// app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-
-// app.use(express.errorHandler());
-//====================================================================
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStratergy(User.authenticate()));
@@ -44,8 +39,6 @@ app.use(function (req, res, next) {
     user = res.locals.currentUser;
     next();
 });
-
-let c = 0;
 
 app.get("/", middleware.isLoggedIn, (req, res) => {
     res.render("index");
@@ -96,16 +89,31 @@ server.listen(port, () => console.log(`Listening on ${port}`));
 // io.configure();
 // io.set("transports", ["xhr-polling"]);
 // io.set("polling duration", 10);
-
+users = [];
 io.on("connection", (socket) => {
     console.log("connection made ");
     socket.on("chat", (data) => {
+        data.users = users;
         socket.broadcast.emit("chat", data);
     });
     socket.on("typing", (data) => {
         socket.broadcast.emit("typing", data);
     });
     socket.on("newconnection", (data) => {
+        users.push({
+            id: socket.id,
+            name: data.trim(),
+        });
+        console.log(users);
         socket.broadcast.emit("newconnection", data);
+    });
+    socket.on("disconnect", () => {
+        let name = "";
+        users.forEach((item) => {
+            if (item.id === socket.id) name = item.name;
+        });
+        console.log(name + " disconnected");
+        users = users.filter((item) => item.id !== socket.id);
+        socket.broadcast.emit("userDisconnected", name);
     });
 });

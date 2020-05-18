@@ -1,4 +1,5 @@
-const socket = io.connect(window.location.hostname);
+// const socket = io.connect(window.location.hostname);
+const socket = io.connect("http://localhost:5000");
 const message = document.getElementById("message"),
     output = document.getElementById("output"),
     button = document.getElementById("button"),
@@ -35,21 +36,56 @@ message.addEventListener("keypress", () => {
 socket.on("connect", () => {
     socket.emit("newconnection", name.textContent);
 });
-socket.on("newconnection", (data) => {
-    alert.innerHTML =
-        "<div class='alert alert-success' role='alert'>" +
-        data +
-        " joined the chat" +
-        "</div>";
+// socket.on("disconnect", () => {
+//     socket.emit("userDisconnected", name.textContent);
+// });
+socket.on("userDisconnected", (data) => {
+    $("#alert")
+        .html(
+            "<div class='alert alert-danger' role='alert'>" +
+                data +
+                " has left the chat" +
+                "</div>"
+        )
+        .hide();
+    window.setTimeout(function () {
+        $("#alert").slideDown(500);
+    }, 500);
     window.setTimeout(function () {
         $(".alert")
             .fadeTo(500, 0)
             .slideUp(500, function () {
                 $(this).remove();
             });
-    }, 2000);
+    }, 3000);
+});
+socket.on("newconnection", (data) => {
+    $("#alert")
+        .html(
+            "<div class='alert alert-success' role='alert'>" +
+                data +
+                " joined the chat" +
+                "</div>"
+        )
+        .hide();
+    window.setTimeout(function () {
+        $("#alert").slideDown(500);
+    }, 500);
+    window.setTimeout(function () {
+        $(".alert")
+            .fadeTo(500, 0)
+            .slideUp(500, function () {
+                $(this).remove();
+            });
+    }, 3000);
 });
 socket.on("chat", (data) => {
+    let users = "";
+    data.users.forEach((item) => {
+        users += item.name + " , ";
+    });
+    users = users.slice(0, users.length - 3);
+    console.log(users);
     feedback.innerHTML = "";
     output.innerHTML +=
         "<div style='display:flex;justify-content:flex-start'><div class='bg-dark mess p-2 ml-1 m-2 rounded col-8 '><h6 class='text-success text-capitalize'>" +
@@ -62,6 +98,10 @@ socket.on("chat", (data) => {
             minute: "numeric",
         }).format(new Date(data.date)) +
         "</div></div></div>";
+    // output.innerHTML +=
+    //     "<div style='display:flex;justify-content:flex-start'><div class='badge badge-warning'> Seen by " +
+    //     users +
+    //     "</div></div>";
 
     scroll();
     message.focus();
