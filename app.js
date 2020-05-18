@@ -94,7 +94,7 @@ io.on("connection", (socket) => {
     console.log("connection made ");
     socket.on("chat", (data) => {
         data.users = users;
-        socket.broadcast.emit("chat", data);
+        io.sockets.emit("chat", data);
     });
     socket.on("typing", (data) => {
         socket.broadcast.emit("typing", data);

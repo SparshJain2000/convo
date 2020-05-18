@@ -38,6 +38,14 @@ body {
     /* max-width: fit-content; */
 }
 
+.seen {
+    word-wrap: break-word;
+    font-size: x-small;
+    max-width: max-content;
+    min-width: 10vw;
+    /* max-width: fit-content; */
+}
+
 footer {
     /* position: fixed;
     bottom: 0;
