@@ -2,6 +2,7 @@ body {
     background-color: #232323;
     overflow-y: auto;
     font-family: 'Noto Sans HK', sans-serif;
+    height: 100%;
 }
 
 .navbar .navbar-brand {
@@ -47,11 +48,13 @@ body {
 }
 
 footer {
-    /* position: fixed;
+    position: fixed;
     bottom: 0;
-    width: 100%; */
-    margin-top: 14vh;
-    z-index: -2;
+    width: 100%;
+    background-color: black;
+    margin-top: 34vh;
+    /* z-index: -2;
+    bottom: 0; */
 }
 
 footer .fa {
