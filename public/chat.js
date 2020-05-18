@@ -1,5 +1,5 @@
-const socket = io.connect(window.location.hostname);
-// const socket = io.connect("http://localhost:5000");
+// const socket = io.connect(window.location.hostname);
+const socket = io.connect("http://localhost:5000");
 const message = document.getElementById("message"),
     output = document.getElementById("output"),
     button = document.getElementById("button"),
@@ -19,6 +19,7 @@ button.addEventListener("click", () => {
 });
 message.addEventListener("keyup", () => {
     if (message.value !== "") socket.emit("typing", name.textContent);
+    else socket.emit("typing", "stop");
 });
 socket.on("connect", () => {
     socket.emit("newconnection", name.textContent);
@@ -103,19 +104,20 @@ socket.on("chat", (data) => {
                 minute: "numeric",
             }).format(new Date(data.date)) +
             "</div></div></div>";
-        // output.innerHTML +=
-        //     "<div style='display:flex;justify-content:flex-start'><div class='badge badge-warning'> Seen by " +
-        //     users +
-        //     "</div></div>";
     }
     scroll();
     // message.focus();
 });
 socket.on("typing", (data) => {
-    feedback.innerHTML =
-        "<p class='badge badge-success'><em>" +
-        data +
-        " is typing .... </em></p>";
+    console.log(data === "stop");
+    if (data === "stop") $("#feedback").html("");
+    else
+        $("#feedback").html(
+            "<p class='badge badge-info p-2 ml-2'><em>" +
+                data +
+                " is typing .... </em></p>"
+        );
+
     scroll();
 });
 const scroll = () => {
