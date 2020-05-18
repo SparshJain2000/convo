@@ -1,3 +1,4 @@
+html,
 body {
     background-color: #232323;
     overflow-y: auto;
@@ -26,7 +27,7 @@ body {
 #form {
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
-    margin-top: 15vh;
+    margin-top: 10vh;
     margin-right: 17vw;
     margin-left: 17vw;
 }
@@ -52,13 +53,13 @@ footer {
     bottom: 0;
     width: 100%;
     background-color: black;
-    margin-top: 34vh;
+    /* margin-top: 34vh; */
     /* z-index: -2;
     bottom: 0; */
 }
 
 footer .fa {
-    padding: 1vw;
+    padding: .7rem;
     font-size: 1.2rem;
     margin-left: .8vw;
     margin-right: .8vw;
@@ -69,7 +70,7 @@ footer .fa {
 }
 
 .fa-facebook:hover {
-    border-radius: 45%;
+    border-radius: 47%;
     background: #3B5998;
     color: white;
     transition: .4s ease-in-out;
