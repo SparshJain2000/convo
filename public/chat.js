@@ -90,8 +90,6 @@ socket.on("chat", (data) => {
             "<div style='display:flex;justify-content:flex-end'><div class='bg-success seen pl-2 pr-2 p-1 mr-2 rounded col-8 '><strong><em>Seen by " +
             users +
             "</em></strong></div></div>";
-        scroll();
-        message.focus();
     } else {
         feedback.innerHTML = "";
         output.innerHTML +=
@@ -111,7 +109,7 @@ socket.on("chat", (data) => {
         //     "</div></div>";
     }
     scroll();
-    message.focus();
+    // message.focus();
 });
 socket.on("typing", (data) => {
     feedback.innerHTML =
