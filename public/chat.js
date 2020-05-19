@@ -1,5 +1,5 @@
 const socket = io.connect(window.location.hostname),
-    // const socket = io.connect("http://localhost:5000"
+    // const socket = io.connect("http://localhost:5000"),
     message = document.getElementById("message"),
     output = document.getElementById("output"),
     button = document.getElementById("button"),
@@ -9,7 +9,7 @@ const socket = io.connect(window.location.hostname),
     chat_window = document.getElementById("chat-window"),
     fileInput = document.getElementById("file-input");
 let image = "";
-$("#up").hide();
+$("#up").html('<i class= "fa fa-arrow-up" >').hide();
 //=================================================================
 //input image
 $("#file-input").on("change", function (e) {
