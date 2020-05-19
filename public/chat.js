@@ -1,31 +1,22 @@
-const socket = io.connect(window.location.hostname);
-// const socket = io.connect("http://localhost:5000");
-const message = document.getElementById("message"),
+const socket = io.connect(window.location.hostname),
+    // const socket = io.connect("http://localhost:5000"),
+    message = document.getElementById("message"),
     output = document.getElementById("output"),
     button = document.getElementById("button"),
     feedback = document.getElementById("feedback"),
     name = document.getElementById("dropdownMenuButton"),
     alert = document.getElementById("alert"),
-    chat_window = document.getElementById("chat-window");
+    chat_window = document.getElementById("chat-window"),
+    fileInput = document.getElementById("file-input");
+
 let image = "";
-const fileInput = document.getElementById("file-input");
 
 $("#file-input").on("change", function (e) {
-    //Get the first (and only one) file element
-    //that is included in the original event
     var file = e.originalEvent.target.files[0],
         reader = new FileReader();
-    //When the file has been read...
     reader.onload = function (evt) {
-        //Because of how the file was read,
-        //evt.target.result contains the image in base64 format
-        //Nothing special, just creates an img element
-        //and appends it to the DOM so my UI shows
-        //that I posted an image.
-        //send the image via Socket.io
         image = evt.target.result;
     };
-    //And now, read the image and base64
     reader.readAsDataURL(file);
 });
 button.addEventListener("click", () => {
@@ -36,7 +27,6 @@ button.addEventListener("click", () => {
         image: image,
     };
     message.value = "";
-
     socket.emit("chat", data);
 });
 message.addEventListener("keyup", () => {
@@ -46,9 +36,7 @@ message.addEventListener("keyup", () => {
 socket.on("connect", () => {
     socket.emit("newconnection", name.textContent);
 });
-// socket.on("disconnect", () => {
-//     socket.emit("userDisconnected", name.textContent);
-// });
+
 socket.on("userDisconnected", (data) => {
     $("#alert")
         .html(
