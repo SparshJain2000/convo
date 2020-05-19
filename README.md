@@ -2,13 +2,13 @@
 
 ## Technologies Used -
 
-###### Back-end : Node JS, Express JS
+###### Back-end : Node JS, Express JS ,Socket.io
 
 ###### Database : Mongo DB (Mongoose)
 
 ###### Authentication : Passport JS
 
-###### Front-end : HTML, EJS, CSS, JS, Semantic UI, Bootstrap
+###### Front-end : HTML, EJS, CSS, JS, Bootstrap
 
 ## Installation :
 
