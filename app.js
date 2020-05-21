@@ -95,6 +95,7 @@ server.listen(port, () => console.log(`Listening on ${port}`));
 // io.set("transports", ["xhr-polling"]);
 // io.set("polling duration", 10);
 users = [];
+
 io.on("connection", (socket) => {
     // console.log("connection made ");
     socket.on("chat", (data) => {

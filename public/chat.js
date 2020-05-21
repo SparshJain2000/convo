@@ -55,6 +55,9 @@ button.addEventListener("click", () => {
     }).format(
         new Date(data.date)
     )}&nbsp &nbsp<div class= 'spinner-border spinner-border-sm' role = 'status' > <span class='sr-only'>Loading...</span></div></div></div></div>`;
+    $("file-input").val("");
+    image = "";
+    scroll();
 });
 
 //=================================================================
@@ -188,7 +191,13 @@ const showUp = () => {
     if (chat_window.scrollHeight > chat_window.clientHeight) $("#up").show();
 };
 const scroll = () => {
-    chat_window.scrollTo({ top: chat_window.scrollHeight, behavior: "smooth" });
+    window.setInterval(
+        chat_window.scrollTo({
+            top: chat_window.scrollHeight,
+            behavior: "smooth",
+        }),
+        300
+    );
 };
 const scrollUp = () => {
     chat_window.scrollTo({ top: 0, behavior: "smooth" });
