@@ -81,6 +81,12 @@ app.get("/logout", function (req, res) {
     req.logout();
     res.redirect("back");
 });
+
+app.get("/sitemap.xml", function (req, res) {
+    res.sendFile("sitemap.xml", {
+        root: path.join(__dirname, "../public"),
+    });
+});
 //render 404 page
 app.use(function (req, res) {
     res.status(404).render("404");
