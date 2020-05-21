@@ -2,7 +2,6 @@ const express = require("express"),
     app = express(),
     socket = require("socket.io"),
     path = require("path"),
-    fs = require("fs"),
     mongoose = require("mongoose"),
     env = require("dotenv"),
     bodyParser = require("body-parser"),
@@ -41,13 +40,16 @@ app.use(function (req, res, next) {
 //=============================================================
 //Get routes
 
+//home route
 app.get("/", middleware.isLoggedIn, (req, res) => {
     res.render("index");
 });
 
+//render login page
 app.get("/login", (req, res) => {
     res.render("login");
 });
+//handle login logic
 app.post(
     "/login",
     passport.authenticate("local", {
@@ -56,7 +58,7 @@ app.post(
     }),
     function (req, res) {}
 );
-
+//handle sign up logic
 app.post("/register", (req, res) => {
     var newUser = new User({
         username: req.body.username,
@@ -74,10 +76,12 @@ app.post("/register", (req, res) => {
         });
     });
 });
+//handle logout
 app.get("/logout", function (req, res) {
     req.logout();
     res.redirect("back");
 });
+//render 404 page
 app.use(function (req, res) {
     res.status(404).render("404");
 });
@@ -112,7 +116,6 @@ io.on("connection", (socket) => {
         users.forEach((item) => {
             if (item.id === socket.id) name = item.name;
         });
-        // console.log(name + " disconnected");
         users = users.filter((item) => item.id !== socket.id);
         socket.broadcast.emit("userDisconnected", name);
     });
