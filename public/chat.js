@@ -10,17 +10,34 @@ const socket = io.connect(window.location.hostname),
     fileInput = document.getElementById("file-input");
 let image = "";
 $("#up").html('<i class= "fa fa-arrow-up" >').hide();
-
+const options = {
+    maxSizeMB: 0.5,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
+    fileType: "image/jpeg",
+};
 //=================================================================
 //input image
 $("#file-input").on("change", function (e) {
-    var file = e.originalEvent.target.files[0],
-        reader = new FileReader();
-    reader.onload = function (evt) {
-        image = evt.target.result;
-    };
-    reader.readAsDataURL(file);
-    message.focus();
+    button.disabled = true;
+    fileInput.disabled = true;
+    const file = e.originalEvent.target.files[0];
+    if (file) {
+        if (file.type != "image/gif") {
+            options.fileType = file.type;
+            imageCompression(file, options)
+                .then((compressedFile) => {
+                    console.log(compressedFile);
+                    setImage(compressedFile);
+                    message.focus();
+                })
+                .catch((error) => console.log(error));
+        } else {
+            setImage(file);
+        }
+    }
+    button.disabled = false;
+    fileInput.disabled = false;
 });
 
 //=================================================================
@@ -201,4 +218,11 @@ const scroll = () => {
 };
 const scrollUp = () => {
     chat_window.scrollTo({ top: 0, behavior: "smooth" });
+};
+const setImage = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+        image = event.target.result;
+    };
 };
