@@ -42,6 +42,7 @@ $("#file-input").on("change", function (e) {
 
 //=================================================================
 //send message
+
 button.addEventListener("click", () => {
     let data = {
         handle: name.textContent,
@@ -51,30 +52,29 @@ button.addEventListener("click", () => {
     };
     message.value = "";
     socket.emit("chat", data);
-    // console.log("sending");
-    // $("#alert")
-    //     .html(
-    //         "<div class='alert alert-primary' role='alert'> Sending &nbsp <div class= 'spinner-grow spinner-grow-sm text-info m-1' role = 'status' > <span class='sr-only'>Loading...</span></div></div>"
-    //     )
-    //     .hide();
-    // $("#alert").slideDown(500);
     let style = "display:flex;justify-content:flex-end",
         bg = `bg-secondary mess p-2 mr-1 m-2 rounded col-8 `,
         color = `text-warning text-capitalize`;
-    output.innerHTML += `<div style=${style} ><div class='${bg}'><h6 class= ${color}>${
-        data.handle
-    }</h6><h5>${data.message}</h5><img class="img-fluid rounded mb-2" src='${
-        data.image
-    }'/><div style="text-align:right"> 
+    addMessage = async () => {
+        output.innerHTML += `<div style=${style} ><div class='${bg}'><h6 class= ${color}>${
+            data.handle
+        }</h6><div>${
+            data.message
+        }</div><img class="img-fluid rounded mb-2" src='${
+            data.image
+        }'/><div style="text-align:right;font-size:2vmin"> 
     ${new Intl.DateTimeFormat("en-US", {
         hour: "numeric",
         minute: "numeric",
     }).format(
         new Date(data.date)
     )}&nbsp &nbsp<div class= 'spinner-border spinner-border-sm' role = 'status' > <span class='sr-only'>Loading...</span></div></div></div></div>`;
-    $("file-input").val("");
-    image = "";
-    scroll();
+        $("file-input").val("");
+    };
+    addMessage().then(() => {
+        image = "";
+        scroll();
+    });
 });
 
 //=================================================================
@@ -158,11 +158,11 @@ socket.on("chat", (data) => {
         color = `text-success text-capitalize`;
         output.innerHTML += `<div style=${style} ><div class='${bg}'><h6 class= ${color}>${
             data.handle
-        }</h6><h5>${
+        }</h6><div>${
             data.message
-        }</h5><img class="img-fluid rounded mb-2" src='${
+        }</div><img class="img-fluid rounded mb-2" src='${
             data.image
-        }'/><div style="text-align:right"> 
+        }'/><div style="text-align:right;font-size:2vmin"> 
     ${new Intl.DateTimeFormat("en-US", {
         hour: "numeric",
         minute: "numeric",
@@ -173,21 +173,6 @@ socket.on("chat", (data) => {
     socket.emit("typing", "stop");
     showUp();
     scroll();
-    // console.log("recieved");
-    // if ($("#alert").html() != "") {
-    //     $("#alert").html(
-    //         "<div class='alert alert-success' role='alert'> Sent </div>"
-    //     );
-    //     window.setTimeout(function () {
-    //         console.log(true);
-    //         $(".alert")
-    //             .fadeTo(500, 0)
-    //             .slideUp(500, function () {
-    //                 $(this).remove();
-    //             });
-    //     }, 700);
-    // }
-    // message.focus();
 });
 
 //=================================================================
@@ -226,3 +211,4 @@ const setImage = (file) => {
         image = event.target.result;
     };
 };
+//=================================================================
