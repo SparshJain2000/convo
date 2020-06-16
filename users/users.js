@@ -20,6 +20,6 @@ const deleteUser = (id) => {
     return null;
 };
 const getRoomUsers = (room) => {
-    return users.filter((user) => user.room === room);
+    return users.filter((user) => user.room.roomName === room);
 };
 module.exports = { addUser, getUsers, deleteUser, getRoomUsers };

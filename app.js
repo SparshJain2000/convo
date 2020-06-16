@@ -49,9 +49,6 @@ app.use(function (req, res, next) {
 app.get("/", middleware.isLoggedIn, (req, res) => {
     res.render("index");
 });
-app.get("/chat/:id", middleware.isLoggedIn, (req, res) => {
-    res.render("index", { room: req.params.id });
-});
 //render login page
 app.get("/login", (req, res) => {
     res.render("login");
@@ -122,51 +119,56 @@ server.listen(port, () => console.log(`Listening on ${port}`));
 const rooms = [];
 io.on("connection", (socket) => {
     socket.on("createRoom", ({ handle }) => {
-        const room = `room${rooms.length + 1}`;
+        const room = {
+            roomName: `chatroom${rooms.length + 1}`,
+            admin: handle.trim(),
+        };
+        const data = { handle: handle, room: room };
         rooms.push(room);
-        socket.join(room);
+        socket.join(room.roomName);
+        // console.log(rooms);
         addUser(socket.id, handle.trim(), room);
-        socket.broadcast.to(room).emit("newconnection", handle);
+        socket.emit("joined", data);
+        socket.broadcast.to(room.roomName).emit("newconnection", data);
     });
     socket.on("joinRoom", (data) => {
-        socket.join(data.room);
-        addUser(socket.id, data.handle.trim(), data.room);
-        socket.emit("joined", data);
-        socket.broadcast.to(data.room).emit("newconnection", data);
+        const index = rooms.findIndex((room) => room.roomName === data.room);
+        if (index !== -1) {
+            socket.join(data.room);
+            addUser(socket.id, data.handle.trim(), rooms[index]);
+            data.room = rooms[index];
+            socket.emit("joined", data);
+            socket.broadcast.to(data.room.roomName).emit("newconnection", data);
+        } else socket.emit("invalidRoom", { message: "Invalid room-id" });
     });
     socket.on("chat", (data) => {
         const user = data.handle.trim();
         const currentUser = getUsers().filter((obj) => obj.id === socket.id);
-        data.users = getRoomUsers(currentUser[0].room);
-        io.in(currentUser[0].room).emit("chat", data);
+        if (currentUser.length > 0) {
+            data.users = getRoomUsers(currentUser[0].room.roomName);
+            io.in(currentUser[0].room.roomName).emit("chat", data);
+        }
     });
     socket.on("typing", (data) => {
         const user = data.trim();
-        console.log(user);
         const currentUser = getUsers().filter((obj) => obj.id == socket.id);
-        console.log(currentUser);
-        socket.broadcast.to(currentUser[0].room).emit("typing", data);
+        socket.broadcast.to(currentUser[0].room.roomName).emit("typing", data);
     });
-    // socket.on("newconnection", (data) => {
-    //     users.push({
-    //         id: socket.id,
-    //         name: data.trim(),
-    //     });
-    //     socket.broadcast.emit("newconnection", data);
-    // });
+    socket.on("leaveRoom", (handle) => {
+        const user = deleteUser(socket.id);
+        if (user) {
+            socket.leave(user.room.roomName);
+            socket.emit("left", user);
+            socket.broadcast
+                .to(user.room.roomName)
+                .emit("userDisconnected", user.name);
+        }
+    });
     socket.on("disconnect", () => {
         const user = deleteUser(socket.id);
-        console.log(socket.id);
-        console.log(user);
-        // getUsers().forEach((item) => {
-        //     if (item.id === socket.id) name = item.name;
-        // });
-        // const user = data.trim();
-        // const currentUser = getUsers().filter((obj) => obj.id === socket.id);
-        // console.log(currentUser);
-
-        // users = getUsers().filter((item) => item.id !== socket.id);
         if (user)
-            socket.broadcast.to(user.room).emit("userDisconnected", user.name);
+            socket.broadcast
+                .to(user.room.roomName)
+                .emit("userDisconnected", user.name);
     });
 });

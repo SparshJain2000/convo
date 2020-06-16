@@ -50,6 +50,17 @@ body {
         font-size: 4vmin;
         /* max-width: fit-content; */
     }
+    #btns {
+        width: 70vw;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+#btns {
+    width: 40vw;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .seen {
@@ -127,4 +138,19 @@ footer .fa {
     overflow: hidden;
     position: absolute;
     z-index: -1;
+}
+
+.dropdown-item {
+    color: white;
+    transition: .3s ease-in-out;
+}
+
+.dropdown-item:hover {
+    color: black;
+    transition: .3s ease-in-out;
+}
+
+#roomName {
+    border: 0.01px solid rgb(56, 56, 56);
+    border-radius: .5rem;
 }

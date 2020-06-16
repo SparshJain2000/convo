@@ -1,5 +1,5 @@
-// const socket = io.connect(window.location.hostname),
-const socket = io.connect("http://localhost:4000"),
+const socket = io.connect(window.location.hostname),
+    // const socket = io.connect("http://localhost:4000"),
     message = document.getElementById("message"),
     output = document.getElementById("output"),
     button = document.getElementById("button"),
@@ -7,10 +7,17 @@ const socket = io.connect("http://localhost:4000"),
     name = document.getElementById("dropdownMenuButton"),
     alert = document.getElementById("alert"),
     chat_window = document.getElementById("chat-window"),
+    roomName = document.getElementById("roomName"),
     fileInput = document.getElementById("file-input");
+const options = {
+    maxSizeMB: 0.5,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
+    fileType: "image/jpeg",
+};
 let image = "";
+$("#up").html('<i class= "fa fa-arrow-up" >').hide();
 
-const roomName = document.getElementById("roomName");
 const createRoom = () => {
     socket.emit("createRoom", { handle: name.textContent });
 };
@@ -19,22 +26,41 @@ const joinRoom = () => {
         handle: name.textContent,
         room: roomName.value,
     });
-    socket.on("joined", (data) => {
-        document.querySelector(".close").click();
-        // location.href = `/chat/${roomName.value}`;
-        document.getElementById("btns").style.display = "none";
-        document.getElementById("chat-window").style.display = "block";
-    });
 };
-
-$("#up").html('<i class= "fa fa-arrow-up" >').hide();
-const options = {
-    maxSizeMB: 0.5,
-    maxWidthOrHeight: 1920,
-    useWebWorker: true,
-    fileType: "image/jpeg",
+const leaveRoom = () => {
+    socket.emit("leaveRoom", name.textContent);
+    document.querySelector("#roomInfo").innerHTML = "";
+    document.getElementById("chat-window").style.display = "none";
+    document.querySelector(".form-inline").style.display = "none";
+    document.getElementById("btns").style.display = "block";
 };
-
+socket.on("invalidRoom", ({ message }) => {
+    document.querySelector(".close").click();
+    $("#alert")
+        .html(
+            "<div class='alert alert-warning' role='alert'>" +
+                message +
+                "</div>"
+        )
+        .hide();
+    $("#alert").slideDown(500);
+    window.setTimeout(function () {
+        $(".alert")
+            .fadeTo(500, 0)
+            .slideUp(500, function () {
+                $(this).remove();
+            });
+    }, 3000);
+});
+socket.on("joined", (data) => {
+    document.querySelector(".close").click();
+    document.querySelector(
+        "#roomInfo"
+    ).innerHTML = `<div class='ml-auto mr-4'><button class="btn btn-info ">RoomId: <em>${data.room.roomName}</em></button><button class='btn btn-danger ml-1' onclick='leaveRoom()'><i class='fa fa-sign-out'></i></button></div>`;
+    document.getElementById("btns").style.display = "none";
+    document.getElementById("chat-window").style.display = "block";
+    document.querySelector(".form-inline").style.display = "flex";
+});
 //=================================================================
 //input image
 $("#file-input").on("change", (e) => {
@@ -148,6 +174,14 @@ socket.on("userDisconnected", (data) => {
                 $(this).remove();
             });
     }, 3000);
+});
+socket.on("left", (user) => {
+    document.getElementById("btns").style.display = "block";
+    document.getElementById("output").innerHTML = "";
+    document.getElementById("up").remove();
+    document.querySelector("#roomInfo").innerHTML = "";
+    document.getElementById("chat-window").style.display = "none";
+    document.querySelector(".form-inline").style.display = "none";
 });
 
 //=================================================================
