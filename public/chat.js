@@ -239,6 +239,24 @@ socket.on("typing", (data) => {
     scroll();
 });
 
+socket.on("error", ({ message }) => {
+    $("#alert")
+        .html(
+            "<div class='alert alert-danger' role='alert'>" +
+                message +
+                " joined the chat" +
+                "</div>"
+        )
+        .hide();
+    $("#alert").slideDown(500);
+    window.setTimeout(function () {
+        $(".alert")
+            .fadeTo(500, 0)
+            .slideUp(500, function () {
+                $(this).remove();
+            });
+    }, 3000);
+});
 //=================================================================
 //utility functions
 

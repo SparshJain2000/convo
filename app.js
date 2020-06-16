@@ -171,4 +171,8 @@ io.on("connection", (socket) => {
                 .to(user.room.roomName)
                 .emit("userDisconnected", user.name);
     });
+    socket.on("error", (error) => {
+        console.log(error);
+        socket.emit("error", { message: err });
+    });
 });
