@@ -10,6 +10,7 @@ const express = require("express"),
     middleware = require("./middleware"),
     User = require("./models/user"),
     server = require("http").createServer(app),
+    { addUser, getUsers, deleteUser, getRoomUsers } = require("./users/users"),
     io = socket(server);
 env.config();
 app.use(express.static(path.join(__dirname, "public")));
@@ -41,10 +42,16 @@ app.use(function (req, res, next) {
 //Get routes
 
 //home route
+// app.get("/chat", middleware.isLoggedIn, (req, res) => {
+//     res.render("index");
+// });
+
 app.get("/", middleware.isLoggedIn, (req, res) => {
     res.render("index");
 });
-
+app.get("/chat/:id", middleware.isLoggedIn, (req, res) => {
+    res.render("index", { room: req.params.id });
+});
 //render login page
 app.get("/login", (req, res) => {
     res.render("login");
@@ -92,7 +99,7 @@ app.use(function (req, res) {
     res.status(404).render("404");
 });
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 4000;
 
 server.listen(port, () => console.log(`Listening on ${port}`));
 //=============================================================
@@ -100,30 +107,66 @@ server.listen(port, () => console.log(`Listening on ${port}`));
 
 // io.set("transports", ["xhr-polling"]);
 // io.set("polling duration", 10);
-users = [];
+// let users = [];
+// const addUser = (newUser) => {
+//     users.push(newUser);
+//     console.log("---------------");
+//     console.log(users);
+// };
+// const getUsers = () => {
+//     console.log("###############");
 
+//     console.log(users);
+//     return users;
+// };
+const rooms = [];
 io.on("connection", (socket) => {
-    // console.log("connection made ");
+    socket.on("createRoom", ({ handle }) => {
+        const room = `room${rooms.length + 1}`;
+        rooms.push(room);
+        socket.join(room);
+        addUser(socket.id, handle.trim(), room);
+        socket.broadcast.to(room).emit("newconnection", handle);
+    });
+    socket.on("joinRoom", (data) => {
+        socket.join(data.room);
+        addUser(socket.id, data.handle.trim(), data.room);
+        socket.emit("joined", data);
+        socket.broadcast.to(data.room).emit("newconnection", data);
+    });
     socket.on("chat", (data) => {
-        data.users = users;
-        io.sockets.emit("chat", data);
+        const user = data.handle.trim();
+        const currentUser = getUsers().filter((obj) => obj.id === socket.id);
+        data.users = getRoomUsers(currentUser[0].room);
+        io.in(currentUser[0].room).emit("chat", data);
     });
     socket.on("typing", (data) => {
-        socket.broadcast.emit("typing", data);
+        const user = data.trim();
+        console.log(user);
+        const currentUser = getUsers().filter((obj) => obj.id == socket.id);
+        console.log(currentUser);
+        socket.broadcast.to(currentUser[0].room).emit("typing", data);
     });
-    socket.on("newconnection", (data) => {
-        users.push({
-            id: socket.id,
-            name: data.trim(),
-        });
-        socket.broadcast.emit("newconnection", data);
-    });
+    // socket.on("newconnection", (data) => {
+    //     users.push({
+    //         id: socket.id,
+    //         name: data.trim(),
+    //     });
+    //     socket.broadcast.emit("newconnection", data);
+    // });
     socket.on("disconnect", () => {
-        let name = "";
-        users.forEach((item) => {
-            if (item.id === socket.id) name = item.name;
-        });
-        users = users.filter((item) => item.id !== socket.id);
-        socket.broadcast.emit("userDisconnected", name);
+        const user = deleteUser(socket.id);
+        console.log(socket.id);
+        console.log(user);
+        // getUsers().forEach((item) => {
+        //     if (item.id === socket.id) name = item.name;
+        // });
+        // const user = data.trim();
+        // const currentUser = getUsers().filter((obj) => obj.id === socket.id);
+        // console.log(currentUser);
+
+        // users = getUsers().filter((item) => item.id !== socket.id);
+        if (user)
+            socket.broadcast.to(user.room).emit("userDisconnected", user.name);
     });
 });
