@@ -40,12 +40,7 @@ app.use(function (req, res, next) {
 });
 //=============================================================
 //Get routes
-
 //home route
-// app.get("/chat", middleware.isLoggedIn, (req, res) => {
-//     res.render("index");
-// });
-
 app.get("/", middleware.isLoggedIn, (req, res) => {
     res.render("index");
 });

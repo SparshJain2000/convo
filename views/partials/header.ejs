@@ -8,29 +8,26 @@
     <meta name="description" content="Chatting web app for different people to get along with one another. Chat are deleted after single use">
     <meta name="keywords" content="Convoo, Convo, Chat, Chatting, HerkouApp, heroku app ">
     <meta name="author" content="Sparsh Jain">
+    <link rel="icon" href="../logo.svg" type='icon/svg'>
     <title>Convo</title>
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" type='text/css' href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito&display=swap" rel="stylesheet">
-
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@latest/dist/browser-image-compression.js"></script>
 </head>
 
 <body>
     <nav class="navbar navbar-dark bg-dark">
-        <a class="navbar-brand" href='/'><i class="fa fa-comments"></i>&nbspCONVO</a>
+        <a class="navbar-brand" href='/'><img class='img-fluid' src='../logo.svg' width='45px'><span class='my-auto'>&nbspCONVO</span></a>
         <% if(!currentUser){ %>
             <a class="btn btn-primary btn align-right text-white" href='/login'>login <i class='fa fa-user'></i></a>
             <% } else { %>
-                <!-- <a class="btn btn-primary align-right text-white" href='/logout'>logout <i class='fa fa-user'></i></a> -->
-
                 <div class="dropdown align-right">
                     <button class="btn btn-primary btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <%=currentUser.first_name.trim()%>
@@ -39,6 +36,5 @@
                         <a class="btn btn-dark btn-xs dropdown-item " href="/logout">Log Out <i class='fa fa-sign-out '></i></a>
                     </div>
                 </div>
-
                 <% } %>
     </nav>

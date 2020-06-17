@@ -8,61 +8,19 @@ const socket = io.connect(window.location.hostname),
     alert = document.getElementById("alert"),
     chat_window = document.getElementById("chat-window"),
     roomName = document.getElementById("roomName"),
-    fileInput = document.getElementById("file-input");
-const options = {
-    maxSizeMB: 0.5,
-    maxWidthOrHeight: 1920,
-    useWebWorker: true,
-    fileType: "image/jpeg",
-};
+    fileInput = document.getElementById("file-input"),
+    options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        fileType: "image/jpeg",
+    };
 let image = "";
 $("#up").html('<i class= "fa fa-arrow-up" >').hide();
 
-const createRoom = () => {
-    socket.emit("createRoom", { handle: name.textContent });
-};
-const joinRoom = () => {
-    socket.emit("joinRoom", {
-        handle: name.textContent,
-        room: roomName.value,
-    });
-};
-const leaveRoom = () => {
-    socket.emit("leaveRoom", name.textContent);
-    document.querySelector("#roomInfo").innerHTML = "";
-    document.getElementById("chat-window").style.display = "none";
-    document.querySelector(".form-inline").style.display = "none";
-    document.getElementById("btns").style.display = "block";
-};
-socket.on("invalidRoom", ({ message }) => {
-    document.querySelector(".close").click();
-    $("#alert")
-        .html(
-            "<div class='alert alert-warning' role='alert'>" +
-                message +
-                "</div>"
-        )
-        .hide();
-    $("#alert").slideDown(500);
-    window.setTimeout(function () {
-        $(".alert")
-            .fadeTo(500, 0)
-            .slideUp(500, function () {
-                $(this).remove();
-            });
-    }, 3000);
-});
-socket.on("joined", (data) => {
-    document.querySelector(".close").click();
-    document.querySelector(
-        "#roomInfo"
-    ).innerHTML = `<div class='ml-auto mr-4'><button class="btn btn-info ">RoomId: <em>${data.room.roomName}</em></button><button class='btn btn-danger ml-1' onclick='leaveRoom()'><i class='fa fa-sign-out'></i></button></div>`;
-    document.getElementById("btns").style.display = "none";
-    document.getElementById("chat-window").style.display = "block";
-    document.querySelector(".form-inline").style.display = "flex";
-});
 //=================================================================
 //input image
+
 $("#file-input").on("change", (e) => {
     button.disabled = true;
     fileInput.disabled = true;
@@ -86,7 +44,27 @@ $("#file-input").on("change", (e) => {
 });
 
 //=================================================================
-//send message
+//Emit Create, Join and Leave room events
+
+const createRoom = () => {
+    socket.emit("createRoom", { handle: name.textContent });
+};
+const joinRoom = () => {
+    socket.emit("joinRoom", {
+        handle: name.textContent,
+        room: roomName.value,
+    });
+};
+const leaveRoom = () => {
+    socket.emit("leaveRoom", name.textContent);
+    document.querySelector("#roomInfo").innerHTML = "";
+    document.getElementById("chat-window").style.display = "none";
+    document.querySelector(".form-inline").style.display = "none";
+    document.getElementById("btns").style.display = "block";
+};
+
+//=================================================================
+//emit chat event (send message)
 
 button.addEventListener("click", () => {
     let data = {
@@ -123,7 +101,8 @@ button.addEventListener("click", () => {
 });
 
 //=================================================================
-//trigger user typing and send message on enter
+//Emit typing event (trigger user typing and send message on enter)
+
 message.addEventListener("keyup", (event) => {
     if (message.value !== "") socket.emit("typing", name.textContent);
     else socket.emit("typing", "stop");
@@ -132,17 +111,17 @@ message.addEventListener("keyup", (event) => {
 });
 
 //=================================================================
-//New User connected
+//Handle user-connected event
+
 socket.on("connect", () => {
     socket.emit("newconnection", name.textContent);
 });
 socket.on("newconnection", (data) => {
     $("#alert")
         .html(
-            "<div class='alert alert-success' role='alert'>" +
-                data.handle +
-                " joined the chat" +
-                "</div>"
+            `<div class='alert alert-success' role='alert'>
+                ${data.handle} joined the chat
+            </div>`
         )
         .hide();
     $("#alert").slideDown(500);
@@ -154,15 +133,31 @@ socket.on("newconnection", (data) => {
             });
     }, 3000);
 });
-
 //=================================================================
-//User Disconnected
-socket.on("userDisconnected", (data) => {
+//Handle User joined the room event
+
+socket.on("joined", (data) => {
+    document.querySelector(".close").click();
+    document.querySelector("#roomInfo").innerHTML = `<div class='ml-auto mr-4'>
+                                                        <button class="btn btn-info ">
+                                                            RoomId: <em>${data.room.roomName}</em>
+                                                        </button>
+                                                        <button class='btn btn-danger ml-1' onclick='leaveRoom()'>
+                                                            <i class='fa fa-sign-out'></i>
+                                                        </button><
+                                                    /div>`;
+    document.getElementById("btns").style.display = "none";
+    document.getElementById("chat-window").style.display = "block";
+    document.querySelector(".form-inline").style.display = "flex";
+});
+//=================================================================
+//Handle invalidRoom event
+socket.on("invalidRoom", ({ message }) => {
+    document.querySelector(".close").click();
     $("#alert")
         .html(
-            "<div class='alert alert-danger' role='alert'>" +
-                data +
-                " has left the chat" +
+            "<div class='alert alert-warning' role='alert'>" +
+                message +
                 "</div>"
         )
         .hide();
@@ -175,17 +170,9 @@ socket.on("userDisconnected", (data) => {
             });
     }, 3000);
 });
-socket.on("left", (user) => {
-    document.getElementById("btns").style.display = "block";
-    document.getElementById("output").innerHTML = "";
-    document.getElementById("up").remove();
-    document.querySelector("#roomInfo").innerHTML = "";
-    document.getElementById("chat-window").style.display = "none";
-    document.querySelector(".form-inline").style.display = "none";
-});
 
 //=================================================================
-//Recieve message from server and show it on client side
+//Handle chat event (Recieve message from server and show it on client side)
 socket.on("chat", (data) => {
     let style,
         bg,
@@ -229,7 +216,7 @@ socket.on("chat", (data) => {
 });
 
 //=================================================================
-//show typing message
+//Handle typing event
 socket.on("typing", (data) => {
     if (data === "stop") $(".type").remove();
     else
@@ -239,6 +226,40 @@ socket.on("typing", (data) => {
     scroll();
 });
 
+//=================================================================
+//Handle user-left  event
+socket.on("left", (user) => {
+    document.getElementById("btns").style.display = "block";
+    document.getElementById("output").innerHTML = "";
+    document.getElementById("up").remove();
+    document.querySelector("#roomInfo").innerHTML = "";
+    document.getElementById("chat-window").style.display = "none";
+    document.querySelector(".form-inline").style.display = "none";
+});
+
+//=================================================================
+//Handle User-Disconnected event
+socket.on("userDisconnected", (data) => {
+    $("#alert")
+        .html(
+            "<div class='alert alert-danger' role='alert'>" +
+                data +
+                " has left the chat" +
+                "</div>"
+        )
+        .hide();
+    $("#alert").slideDown(500);
+    window.setTimeout(function () {
+        $(".alert")
+            .fadeTo(500, 0)
+            .slideUp(500, function () {
+                $(this).remove();
+            });
+    }, 3000);
+});
+
+//=================================================================
+//Handle error
 socket.on("error", ({ message }) => {
     $("#alert")
         .html(
@@ -257,6 +278,7 @@ socket.on("error", ({ message }) => {
             });
     }, 3000);
 });
+
 //=================================================================
 //utility functions
 
