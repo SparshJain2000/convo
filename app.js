@@ -112,10 +112,18 @@ server.listen(port, () => console.log(`Listening on ${port}`));
 //     return users;
 // };
 const rooms = [];
+const roomExists = (roomName) => {
+    const index = rooms.findIndex((room) => room === roomName);
+    return index === -1 ? false : true;
+};
 io.on("connection", (socket) => {
     socket.on("createRoom", ({ handle }) => {
+        let roomName = Math.random().toString(36).substr(2, 6);
+        while (roomExists(roomName)) {
+            roomName = Math.random().toString(36).substr(2, 6);
+        }
         const room = {
-            roomName: `chatroom${rooms.length + 1}`,
+            roomName: `${roomName}`,
             admin: handle.trim(),
         };
         const data = { handle: handle, room: room };

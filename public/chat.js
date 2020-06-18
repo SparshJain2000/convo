@@ -52,7 +52,7 @@ const createRoom = () => {
 const joinRoom = () => {
     socket.emit("joinRoom", {
         handle: name.textContent,
-        room: roomName.value,
+        room: `${roomName.value}`,
     });
 };
 const leaveRoom = () => {
@@ -61,6 +61,7 @@ const leaveRoom = () => {
     document.getElementById("chat-window").style.display = "none";
     document.querySelector(".form-inline").style.display = "none";
     document.getElementById("btns").style.display = "block";
+    document.querySelector("footer").style.display = "block";
 };
 
 //=================================================================
@@ -109,7 +110,9 @@ message.addEventListener("keyup", (event) => {
     //13 => keycode for Enter
     if (event.keyCode === 13) button.click();
 });
-
+document.querySelector("#roomName").addEventListener("keyup", (event) => {
+    if (event.keyCode === 13) joinRoom();
+});
 //=================================================================
 //Handle user-connected event
 
@@ -138,17 +141,20 @@ socket.on("newconnection", (data) => {
 
 socket.on("joined", (data) => {
     document.querySelector(".close").click();
-    document.querySelector("#roomInfo").innerHTML = `<div class='ml-auto mr-4'>
-                                                        <button class="btn btn-info ">
-                                                            RoomId: <em>${data.room.roomName}</em>
+    document.querySelector("#roomInfo").innerHTML = `<div >
+                                                        <button class="btn btn-secondary " onclick='copyId("${data.room.roomName}")'>
+                                                            RoomId: <em class='text-warning'>${data.room.roomName}</em>&nbsp <strong>|</strong>&nbsp
+                                                            Admin : <em class='text-warning'>${data.room.admin}</em>
                                                         </button>
-                                                        <button class='btn btn-danger ml-1' onclick='leaveRoom()'>
-                                                            <i class='fa fa-sign-out'></i>
-                                                        </button><
-                                                    /div>`;
+                                                        <a href="whatsapp://send?text=${data.room.roomName}" data-action="share/whatsapp/share" class='btn btn-primary' onClick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank" title="Share on whatsapp"><i class='fa fa-share'></i></a>
+                                                        <button class='btn btn-danger ml-1' onclick='leaveRoom()' title='Leave room'>
+                                                            <i class='fa fa fa-sign-out'></i>
+                                                        </button>
+                                                    </div>`;
     document.getElementById("btns").style.display = "none";
     document.getElementById("chat-window").style.display = "block";
     document.querySelector(".form-inline").style.display = "flex";
+    document.querySelector("footer").style.display = "none";
 });
 //=================================================================
 //Handle invalidRoom event
@@ -230,6 +236,7 @@ socket.on("typing", (data) => {
 //Handle user-left  event
 socket.on("left", (user) => {
     document.getElementById("btns").style.display = "block";
+    document.querySelector("footer").style.display = "block";
     document.getElementById("output").innerHTML = "";
     document.getElementById("up").remove();
     document.querySelector("#roomInfo").innerHTML = "";
@@ -263,10 +270,8 @@ socket.on("userDisconnected", (data) => {
 socket.on("error", ({ message }) => {
     $("#alert")
         .html(
-            "<div class='alert alert-danger' role='alert'>" +
-                message +
-                " joined the chat" +
-                "</div>"
+            `<div class='alert alert-danger' role='alert'>
+                ${message}</div>`
         )
         .hide();
     $("#alert").slideDown(500);
@@ -303,5 +308,27 @@ const setImage = (file) => {
     reader.onload = (event) => {
         image = event.target.result;
     };
+};
+const copyId = (id) => {
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val(id).select();
+    document.execCommand("copy");
+    $temp.remove();
+    console.log("Copied the text: " + id);
+    $("#alert")
+        .html(
+            `<div class='alert alert-info' role='alert'>
+                Room-id: <em>${id}</em> copied to clipboard !</div>`
+        )
+        .hide();
+    $("#alert").slideDown(300);
+    window.setTimeout(function () {
+        $(".alert")
+            .fadeTo(500, 0)
+            .slideUp(500, function () {
+                $(this).remove();
+            });
+    }, 1500);
 };
 //=================================================================

@@ -2,7 +2,7 @@
     <div id="alert"></div>
 
     <div id="main">
-        <div id='roomInfo' class='row my-3'></div>
+        <div id='roomInfo' class='row my-3 justify-content-end' style='width:100%'></div>
         <div id="btns">
 
             <div class="row mt-5 justify-content-center">
@@ -19,7 +19,13 @@
                         </button>
                         </div>
                         <div class="modal-body row justify-content-center">
-                            <input type="text" class='form-group col-9' placeholder="Enter room name" id='roomName'>
+                            <!-- <input type="text" class='form-group col-9' placeholder="Enter room name" id='roomName'> -->
+                            <div class="input-group m-4">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">chatroom-id</div>
+                                </div>
+                                <input type="text" class="form-control" id="roomName" placeholder="Room id">
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -50,6 +56,7 @@
 
     <script src='../chat.js'>
     </script>
-    </body>
+    <%-include('partials/footer.ejs')%>
+        </body>
 
-    </html>
+        </html>
