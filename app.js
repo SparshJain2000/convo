@@ -60,7 +60,8 @@ app.post(
         failureRedirect: "/login",
     }),
     (req, res) => {
-        const url = req.session.redirectUrl ? req.session.redirectUrl : "/";
+        let url = req.session.redirectUrl ? req.session.redirectUrl : "/";
+        if (url.indexOf("login") !== -1) url = "/";
         res.redirect(url);
     },
 );
