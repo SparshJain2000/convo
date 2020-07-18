@@ -1,5 +1,7 @@
-const socket = io.connect(window.location.hostname),
-    // const socket = io.connect("http://localhost:4000"),
+// const socket = io.connect(window.location.hostname),
+const production = false;
+const href = production ? window.location.hostname : "localhost:4000";
+const socket = io.connect(href),
     message = document.getElementById("message"),
     output = document.getElementById("output"),
     button = document.getElementById("button"),
@@ -149,14 +151,13 @@ socket.on("newconnection", (data) => {
 //Handle User joined the room event
 
 socket.on("joined", (data) => {
-    // console.log();
     document.querySelector(".close").click();
     document.querySelector("#roomInfo").innerHTML = `<div >
                                                         <button type="button" class="btn btn-secondary"  data-toggle="tooltip" data-html="true" title="Copy <b>Room-id</b>" data-placement="left" onclick='copyId("${data.room.roomName}")' id='tooltip'>
                                                             RoomId: <em class='text-warning'>${data.room.roomName}</em>&nbsp <strong>|</strong>&nbsp
                                                             Admin : <em class='text-warning'>${data.room.admin}</em>
                                                         </button>
-                                                        <a href="whatsapp://send?text=${window.location.hostname}/join/${data.room.roomName}" data-action="share/whatsapp/share" class='btn btn-primary' onClick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank" title="Share on whatsapp"  data-toggle="tooltip" data-placement="bottom"><i class='fa fa-whatsapp'></i></a>
+                                                        <a href="whatsapp://send?text=${href}/join/${data.room.roomName}" data-action="share/whatsapp/share" class='btn btn-primary' onClick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank" title="Share on whatsapp"  data-toggle="tooltip" data-placement="bottom"><i class='fa fa-whatsapp'></i></a>
                                                         <button type='button' class='btn btn-danger ml-1' onclick='leaveRoom()'>
                                                             <i class='fa fa fa-sign-out'></i>
                                                         </button>
