@@ -13,7 +13,11 @@ const express = require("express"),
     { addUser, getUsers, deleteUser, getRoomUsers } = require("./users/users"),
     rooms = [],
     io = socket(server);
+    var session = require('express-session')
+var MemoryStore = require('memorystore')(session)
+ 
 env.config();
+
 // app.io = io;
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
@@ -22,12 +26,16 @@ mongoose.connect(process.env.MONGO_URI, {
     useUnifiedTopology: true,
 });
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-    require("express-session")({
+app.use(session(
+    {
         secret: process.env.SECRET,
+        cookie: { maxAge: 86400000 },
+        store: new MemoryStore({
+          checkPeriod: 86400000 // prune expired entries every 24h
+        }),
         resave: false,
         saveUninitialized: false,
-    }),
+    })
 );
 //=============================================================
 //Passport Configuration
