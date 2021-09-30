@@ -25,7 +25,7 @@ A chat application using web sockets and NodeJS
 git clone https://github.com/SparshJain2000/convo.git
 ```
 
-#### Install node libraries
+#### Install dev and production dependencies
 
 ```bash
 npm install
