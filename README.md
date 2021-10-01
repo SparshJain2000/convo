@@ -7,7 +7,7 @@
 A chat application using web sockets and NodeJS 
 ## Technologies Used -
 
-###### Back-end : Node JS, Express JS ,Socket.io
+###### Back-end : Node JS, Express JS, Socket.io
 
 ###### Database : Mongo DB (Mongoose)
 
@@ -50,7 +50,7 @@ nodemon app
 **MIT &copy; [Sparsh Jain](https://github.com/SparshJain2000/convo/blob/master/LICENSE)**
 
 ## Support
-Give a 🌟 to this repo if you liked it .
+Give a 🌟 to this repo if you liked it.
 
 Connect with me
 
