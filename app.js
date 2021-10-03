@@ -131,6 +131,7 @@ const roomExists = (roomName) => {
     const index = rooms.findIndex((room) => room === roomName);
     return index === -1 ? false : true;
 };
+//  handle socket calls
 io.on("connection", (socket) => {
     socket.on("createRoom", ({ handle }) => {
         let roomName = Math.random().toString(36).substr(2, 6);
