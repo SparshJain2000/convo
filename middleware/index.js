@@ -1,5 +1,5 @@
 var middlewareObj = {};
-middlewareObj.isLoggedIn = function (req, res, next) {
+middlewareObj.isLoggedIn = (req, res, next) => {
 //   if (req.isAuthenticated()) {
 //     // res.redirect("back");
 //     return next();
